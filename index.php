@@ -17,10 +17,11 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
           integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-    <link href="/app.css" rel="stylesheet"/>
+    <link href="app.css" rel="stylesheet"/>
     <title>Products CRUD</title>
 </head>
 <body>
+    <h1>Products CRUD</h1>
     <table class="table">
   <thead>
     <tr>
@@ -41,8 +42,8 @@
       <td><?php echo $product['price'] ?></td>
       <td><?php echo $product['create_date'] ?></td>
       <td>
-          <button type="button" class="btn btn-primary">Edit</button>
-          <button type="button" class="btn btn-danger">Delete</button>
+          <button type="button" class="btn btn-outline-primary">Edit</button>
+          <button type="button" class="btn btn-outline-danger">Delete</button>
       </td>
     </tr>
     <?php endforeach; ?>
