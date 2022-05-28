@@ -22,6 +22,11 @@
 </head>
 <body>
     <h1>Products CRUD</h1>
+
+    <p>
+        <a href="create.php" class="btn btn-success">Create Product</a>
+    </p>
+
     <table class="table">
   <thead>
     <tr>
