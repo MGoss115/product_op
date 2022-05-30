@@ -21,7 +21,22 @@
       if(!$price){
         $errors[] = 'Product price is required';
       }
+      if(!is_dir('images')){
+        mkdir('images');
+      }
       if(empty($errors)){
+        $image = $_FILES['image'] ?? null;
+        if($image){
+          $imagePath = 'images/'.randomString(8).'/'.$image['name'];
+          echo '<pre>';
+          print_r($imagePath);
+          echo '</pre>';
+          exit;
+
+          move_uploaded_file($image['tmp_name'], $image['name']);
+        }
+   
+
         $statement = $pdo->prepare("INSERT INTO products (title, image, description, price, create_date)
                         VALUES (:title, :image, :description, :price, :date);
                     ");
@@ -33,6 +48,16 @@
         $statement->execute();
       }
 
+    }
+
+    function randomString($n){
+      $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      $str = '';
+      for($i = 0; $i < $n; $i++){
+        $index = rand(0, strlen($characters) - 1);
+        $str .= $characters[$index];
+      }
+      return $str;
     }
 
 ?>
@@ -62,7 +87,7 @@
     </div>
   <?php endif; ?>
 
-<form action="" method="post">
+<form action="" method="post" enctype="multipart/form-data">
   <div class="form-group">
     <label>Product Image</label>
     <input type="file" name="image" class="form-control">
@@ -80,6 +105,7 @@
     <input type="number" name="price" step=".01" class="form-control" value=<?php echo $price?>>
   </div>
   <button type="submit" class="btn btn-primary">Submit</button>
+  <a href="index.php" class="btn btn-success">Home</a>
 </form>
 
 </body>
