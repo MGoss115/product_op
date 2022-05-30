@@ -15,16 +15,15 @@
 
     $errors = [];
 
-    $title = '';
-    $price = '';
-    $description = '';
+    $title = $product['title'];
+    $price = $product['price'];
+    $description = $product['description'];
 
     if($_SERVER['REQUEST_METHOD'] === 'POST'){ 
 
       $title = $_POST['title'];
       $description = $_POST['description'];
       $price = $_POST['price'];
-      $date = date('Y-m-d H:i:s');
 
       if(!$title){
         $errors[] = 'Product title is required';
@@ -37,37 +36,32 @@
       }
       if(empty($errors)){
         $image = $_FILES['image'] ?? null;
-        $imagePath = '';
-        if ($image && $image['tmp_name']) {
-        $imagePath = 'images/' . randomString(8) . '/' . $image['name'];
-        mkdir(dirname($imagePath));
-        move_uploaded_file($image['tmp_name'], $imagePath);
-    }
-   
+        $imagePath = $product['image'];
 
-        $statement = $pdo->prepare("INSERT INTO products (title, image, description, price, create_date)
-                        VALUES (:title, :image, :description, :price, :date);
-                    ");
+        if($product['image']){
+            unlink($product['image']);
+          }
+        if ($image && $image['tmp_name']) {
+            $imagePath = 'images/' . randomString(8) . '/' . $image['name'];
+            mkdir(dirname($imagePath));
+            move_uploaded_file($image['tmp_name'], $imagePath);
+        }
+        
+        $statement = $pdo->prepare("UPDATE products SET title = :title, 
+                                        image = :image, 
+                                        description = :description, 
+                                        price = :price WHERE id = :id");
         $statement->bindValue(':title', $title);
         $statement->bindValue(':image', $imagePath);
         $statement->bindValue(':description', $description);
         $statement->bindValue(':price', $price);
-        $statement->bindValue(':date', $date);
+        $statement->bindValue(':id', $id);
+
         $statement->execute();
         header('Location: index.php');
+    
       }
-
-    }
-
-    function randomString($n){
-      $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-      $str = '';
-      for($i = 0; $i < $n; $i++){
-        $index = rand(0, strlen($characters) - 1);
-        $str .= $characters[$index];
-      }
-      return $str;
-    }
+    }  
 
 ?>
 
@@ -85,10 +79,7 @@
     <title>Products CRUD</title>
 </head>
 <body>
-     <p>
-        <a href="index.php" class="btn btn-default">Go Back</a>
-    </p>
-  <h1>Update Product:</h1>
+  <h1>Update Product: <?php echo $product['title'] ?></h1>
 
   <?php if(!empty($errors)): ?>
     <div class="alert alert-danger">
@@ -99,6 +90,9 @@
   <?php endif; ?>
 
 <form action="" method="post" enctype="multipart/form-data">
+    <?php if ($product['image']): ?>
+        <img src="<?php echo $product['image']?>" class="product-img-view">
+    <?php endif; ?>
   <div class="form-group">
     <label>Product Image</label>
     <input type="file" name="image" class="form-control">
@@ -116,7 +110,7 @@
     <input type="number" name="price" step=".01" class="form-control" value=<?php echo $price?>>
   </div>
   <button type="submit" class="btn btn-primary">Submit</button>
-  <a href="index.php" class="btn btn-info">Go Back</a>
+  <a href="index.php" class="btn btn-light">Go Back</a>
 </form>
 
 </body>
