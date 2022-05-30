@@ -2,6 +2,17 @@
     $pdo = new PDO('mysql:host=localhost;port=3306;dbname=products_crud', 'root', '');
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+    $id = $_GET['id'] ?? null;
+    if (!$id) {
+        header('Location: index.php');
+        exit;
+    }
+
+    $statement = $pdo->prepare('SELECT * FROM products WHERE id = :id');
+    $statement->bindValue(':id', $id);
+    $statement->execute();
+    $product = $statement->fetch(PDO::FETCH_ASSOC);
+
     $errors = [];
 
     $title = '';
@@ -74,8 +85,10 @@
     <title>Products CRUD</title>
 </head>
 <body>
-  <h1>Create New Product</h1>
-
+     <p>
+        <a href="index.php" class="btn btn-default">Go Back</a>
+    </p>
+  <h1>Update Product:</h1>
 
   <?php if(!empty($errors)): ?>
     <div class="alert alert-danger">

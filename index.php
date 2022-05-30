@@ -42,13 +42,18 @@
     <?php foreach($products as $i => $product): ?>
     <tr>
       <th scope="row"><?php echo $i + 1 ?></th>
-      <td><?php echo $product['image'] ?></td>
+      <td>
+         <img src="<?php echo $product['image'] ?>">
+      </td>
       <td><?php echo $product['title'] ?></td>
       <td><?php echo $product['price'] ?></td>
       <td><?php echo $product['create_date'] ?></td>
       <td>
-          <button type="button" class="btn btn-outline-primary">Edit</button>
-          <button type="button" class="btn btn-outline-danger">Delete</button>
+        <a href="update.php?id=<?php echo $product['id'] ?>" class="btn btn-outline-primary">Edit</a>
+          <form method="post" action="delete.php" style="display: inline-block">
+            <input  type="hidden" name="id" value="<?php echo $product['id'] ?>"/>
+            <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+          </form>
       </td>
     </tr>
     <?php endforeach; ?>
