@@ -1,31 +1,32 @@
 <?php 
-    $pdo = new PDO('mysql:host=localhost;port=3306;dbname=products_crud', 'root', '');
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    require_once "database.php";
 
-    $statement = $pdo->prepare('SELECT * FROM products ORDER BY create_date DESC');
+    $search = $_GET['search'] ?? '';
+    if($search){
+      $statement = $pdo->prepare('SELECT * FROM products WHERE title LIKE :title  ORDER BY create_date DESC');
+      $statement->bindValue(':title', "%search%");
+    }else{
+
+      $statement = $pdo->prepare('SELECT * FROM products ORDER BY create_date DESC');
+    }
     $statement->execute();
     $products = $statement->fetchALL(PDO::FETCH_ASSOC);
 ?>
-
-<!doctype html>
-<html lang="en">
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-    <link href="app.css" rel="stylesheet"/>
-    <title>Products CRUD</title>
-</head>
-<body>
+<?php include_once"views/partials/header.php"; ?>
     <h1>Products CRUD</h1>
 
     <p>
         <a href="create.php" class="btn btn-success">Create Product</a>
     </p>
+
+    <form action="">
+      <div class="input-group mb-3">
+      <input type="text" class="form-control" placeholder="Search for Products" name="search" value="<?php echo $search ?>">
+      <div class="input-group-append">
+        <button class="btn btn-outline-secondary" type="submit">Search</button>
+      </div>
+      </div>
+    </form>
 
     <table class="table">
   <thead>
@@ -49,7 +50,7 @@
       <td><?php echo $product['price'] ?></td>
       <td><?php echo $product['create_date'] ?></td>
       <td>
-        <a href="update.php?id=<?php echo $product['id'] ?>" class="btn btn-outline-primary">Edit</a>
+          <a href="update.php?id=<?php echo $product['id'] ?>" class="btn btn-sm btn-outline-primary">Edit</a>
           <form method="post" action="delete.php" style="display: inline-block">
             <input  type="hidden" name="id" value="<?php echo $product['id'] ?>"/>
             <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
