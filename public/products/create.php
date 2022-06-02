@@ -1,6 +1,6 @@
 <?php 
-    require_once "database.php";
-    require_once "functions.php";
+    require_once "../../database.php";
+    require_once "../../functions.php";
 
     $errors = [];
 
@@ -12,7 +12,7 @@
     ];
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-        require_once 'validate_product.php';
+        require_once '../../validate_product.php';
 
         if (empty($errors)) {
             $statement = $pdo->prepare("INSERT INTO products (title, image, description, price, create_date)
@@ -30,10 +30,10 @@
     }
 
 ?>
-<?php include_once"views/partials/header.php"; ?>
+<?php require_once "../../views/partials/header.php"; ?>
   <h1>Create New Product</h1>
 
-<?php require_once './views/partials/products/form.php'; ?>
+<?php require_once '../../views/partials/products/form.php'; ?>
   
 
 </body>

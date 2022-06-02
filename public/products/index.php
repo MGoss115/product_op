@@ -1,5 +1,5 @@
 <?php 
-    require_once "database.php";
+    require_once "../../database.php";
 
     $search = $_GET['search'] ?? '';
     if($search){
@@ -12,7 +12,7 @@
     $statement->execute();
     $products = $statement->fetchALL(PDO::FETCH_ASSOC);
 ?>
-<?php include_once"views/partials/header.php"; ?>
+<?php require_once "../../views/partials/header.php"; ?>
     <h1>Products CRUD</h1>
 
     <p>
