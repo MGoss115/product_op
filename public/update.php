@@ -1,5 +1,6 @@
 <?php 
     require_once "database.php";
+    require_once "functions.php";
 
     $id = $_GET['id'] ?? null;
     if (!$id) {
@@ -12,38 +13,15 @@
     $statement->execute();
     $product = $statement->fetch(PDO::FETCH_ASSOC);
 
-    $errors = [];
 
     $title = $product['title'];
     $price = $product['price'];
     $description = $product['description'];
 
     if($_SERVER['REQUEST_METHOD'] === 'POST'){ 
+      require_once "validate_product.php";
 
-      $title = $_POST['title'];
-      $description = $_POST['description'];
-      $price = $_POST['price'];
-
-
-      if(!$title){
-        $errors[] = 'Product title is required';
-      }
-      if(!$price){
-        $errors[] = 'Product price is required';
-      }
-      if (!is_dir('images')) {
-        mkdir('images');
-      }
       if(empty($errors)){
-        $image = $_FILES['image'] ?? null;
-        $imagePath = $product['image'];
-
-        if ($image && $image['tmp_name']) {
-            $imagePath = 'images/' . randomString(8) . '/' . $image['name'];
-            mkdir(dirname($imagePath));
-            move_uploaded_file($image['tmp_name'], $imagePath);
-        }
-        
         $statement = $pdo->prepare("UPDATE products SET title = :title, 
                                         image = :image, 
                                         description = :description, 
@@ -64,9 +42,6 @@
 <?php include_once"views/partials/header.php"; ?>
   <h1>Update Product: <?php echo $product['title'] ?></h1>
 
-  <p>
-     <a href="index.php" class="btn btn-light">Go Back</a>
-  </p>
 
 <?php require_once './views/partials/products/form.php'; ?>
 

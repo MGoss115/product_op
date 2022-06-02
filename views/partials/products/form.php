@@ -27,4 +27,5 @@
         <input type="number" step=".01" name="price" class="form-control" value="<?php echo $price ?>">
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
+     <a href="index.php" class="btn btn-light">Go Back</a>
 </form>
